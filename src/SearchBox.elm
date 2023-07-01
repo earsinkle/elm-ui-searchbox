@@ -116,6 +116,7 @@ input :
         , text : String
         , selected : Maybe a
         , selectedAttrs : List (Attribute msg)
+        , dropdownAttrs : List (Attribute msg)
         , options : Maybe (List a)
         , label : Input.Label msg
         , placeholder : Maybe (Input.Placeholder msg)
@@ -138,6 +139,7 @@ input userAttributes config =
             if config.state.hasFocus && config.selected == Nothing && config.options /= Nothing then
                 optionsList
                     msgs
+                    config.dropdownAttrs
                     config.selectedAttrs
                     config.toLabel
                     config.state.selectionIndex
@@ -182,11 +184,12 @@ input userAttributes config =
 optionsList :
     { r | changedIndex : Int -> msg, changedSelection : a -> msg }
     -> List (Attribute msg)
+    -> List (Attribute msg)
     -> (a -> String)
     -> Int
     -> List a
     -> Element msg
-optionsList msgs selectedAttrs toLabel selectionIndex options =
+optionsList msgs dropdownAttrs selectedAttrs toLabel selectionIndex options =
     let
         optionItem index option =
             el
@@ -200,7 +203,7 @@ optionsList msgs selectedAttrs toLabel selectionIndex options =
                             selectedAttrs
 
                         else
-                            []
+                            dropdownAttrs
                        )
                 )
                 (text (toLabel option))
