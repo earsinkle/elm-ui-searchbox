@@ -136,7 +136,7 @@ input userAttributes config =
             }
 
         optionsBox =
-            if config.state.hasFocus && config.selected == Nothing && config.options /= Nothing then
+            if config.state.hasFocus && config.options /= Nothing then
                 optionsList
                     msgs
                     config.dropdownAttrs
