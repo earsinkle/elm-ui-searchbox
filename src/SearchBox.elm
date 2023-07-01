@@ -24,6 +24,7 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Events as Events
 import Element.Input as Input
+import Html
 import Html.Attributes
 import Html.Events
 import Json.Decode as Decode
@@ -189,21 +190,18 @@ optionsList msgs toLabel selectionIndex options =
                 [ width fill
                 , padding 5
                 , pointer
-                , Background.color
-                    (if index == selectionIndex then
-                        colors.selected
+                , if index == selectionIndex then
+                    Background.color colors.selected
 
-                     else
-                        colors.white
-                    )
+                  else
+                    htmlAttribute <| Html.Attributes.style "" ""
                 , Events.onMouseDown (msgs.changedSelection option)
                 , Events.onMouseEnter (msgs.changedIndex index)
                 ]
                 (text (toLabel option))
     in
     column
-        [ Background.color colors.white
-        , Border.width 1
+        [ Border.width 1
         , Border.color (rgba255 0 0 0 0.15)
         , Border.shadow
             { offset = ( 0, 6 )
