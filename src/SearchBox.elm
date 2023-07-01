@@ -115,6 +115,7 @@ input :
         { onChange : ChangeEvent a -> msg
         , text : String
         , selected : Maybe a
+        , selectedAttrs : List (Attribute msg)
         , options : Maybe (List a)
         , label : Input.Label msg
         , placeholder : Maybe (Input.Placeholder msg)
@@ -137,6 +138,7 @@ input userAttributes config =
             if config.state.hasFocus && config.selected == Nothing && config.options /= Nothing then
                 optionsList
                     msgs
+                    config.selectedAttrs
                     config.toLabel
                     config.state.selectionIndex
                     filteredOptions
@@ -179,25 +181,28 @@ input userAttributes config =
 
 optionsList :
     { r | changedIndex : Int -> msg, changedSelection : a -> msg }
+    -> List (Attribute msg)
     -> (a -> String)
     -> Int
     -> List a
     -> Element msg
-optionsList msgs toLabel selectionIndex options =
+optionsList msgs selectedAttrs toLabel selectionIndex options =
     let
         optionItem index option =
             el
-                [ width fill
-                , padding 5
-                , pointer
-                , if index == selectionIndex then
-                    Background.color colors.selected
+                ([ width fill
+                 , padding 5
+                 , pointer
+                 , Events.onMouseDown (msgs.changedSelection option)
+                 , Events.onMouseEnter (msgs.changedIndex index)
+                 ]
+                    ++ (if index == selectionIndex then
+                            selectedAttrs
 
-                  else
-                    htmlAttribute <| Html.Attributes.style "" ""
-                , Events.onMouseDown (msgs.changedSelection option)
-                , Events.onMouseEnter (msgs.changedIndex index)
-                ]
+                        else
+                            []
+                       )
+                )
                 (text (toLabel option))
     in
     column
